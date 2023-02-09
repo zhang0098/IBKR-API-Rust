@@ -819,7 +819,7 @@ impl Default for Order {
 
             // SMART routing only
             discretionary_amt: 0.0,
-            e_trade_only: true,
+            e_trade_only: false,
             firm_quote_only: true,
             nbbo_price_cap: UNSET_DOUBLE, // type: float
             opt_out_smart_routing: false,
