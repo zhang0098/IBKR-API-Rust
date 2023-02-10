@@ -29,4 +29,4 @@ serde = { version = "1.0", features = ["derive"] }
 bigdecimal = "0.1.2"
 float-cmp = "0.8.0"
 chrono = "0.4.11"
-simple-logging = "2.0.2"
+env_logger = "0.10.0"
