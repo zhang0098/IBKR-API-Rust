@@ -96,5 +96,5 @@ pub const MIN_SERVER_VER_PRICE_MGMT_ALGO: i32 = 151;
 // 100+ messaging */
 // 100 = enhanced handshake, msg length prefixes
 
-pub const MIN_CLIENT_VER: i32 = 102;
+pub const MIN_CLIENT_VER: i32 = 100;
 pub const MAX_CLIENT_VER: i32 = MIN_SERVER_VER_PRICE_MGMT_ALGO;
