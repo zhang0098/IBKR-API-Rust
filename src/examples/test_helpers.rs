@@ -2441,28 +2441,44 @@ impl<T: Streamer> TestWrapper<T> {
             .expect(CLIENT_IS_NONE)
             .lock()
             .expect(CLIENT_POISONED_MUTEX)
-            .replace_fa(FaDataType::GROUPS, fa_allocation_samples::FA_ONE_GROUP)?;
+            .replace_fa(
+                13001,
+                FaDataType::GROUPS,
+                fa_allocation_samples::FA_ONE_GROUP,
+            )?;
 
         self.client
             .as_ref()
             .expect(CLIENT_IS_NONE)
             .lock()
             .expect(CLIENT_POISONED_MUTEX)
-            .replace_fa(FaDataType::GROUPS, fa_allocation_samples::FA_TWO_GROUPS)?;
+            .replace_fa(
+                13002,
+                FaDataType::GROUPS,
+                fa_allocation_samples::FA_TWO_GROUPS,
+            )?;
 
         self.client
             .as_ref()
             .expect(CLIENT_IS_NONE)
             .lock()
             .expect(CLIENT_POISONED_MUTEX)
-            .replace_fa(FaDataType::PROFILES, fa_allocation_samples::FA_ONE_PROFILE)?;
+            .replace_fa(
+                13003,
+                FaDataType::PROFILES,
+                fa_allocation_samples::FA_ONE_PROFILE,
+            )?;
 
         self.client
             .as_ref()
             .expect(CLIENT_IS_NONE)
             .lock()
             .expect(CLIENT_POISONED_MUTEX)
-            .replace_fa(FaDataType::PROFILES, fa_allocation_samples::FA_TWO_PROFILES)?;
+            .replace_fa(
+                13004,
+                FaDataType::PROFILES,
+                fa_allocation_samples::FA_TWO_PROFILES,
+            )?;
 
         self.client
             .as_ref()
@@ -3180,7 +3196,7 @@ where
         account_name: &str,
     ) {
         info!(
-            "update_portfolio -- contract: {}, position: {}, market_price: {}, market_value: {}, 
+            "update_portfolio -- contract: {}, position: {}, market_price: {}, market_value: {},
              average_cost: {}, unrealized_pnl: {},  realized_pnl: {},  account_name: {}",
             contract,
             position,

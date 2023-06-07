@@ -212,7 +212,7 @@ impl fmt::Display for TickType {
 //==================================================================================================
 /// Financial advisor data types
 #[repr(i32)]
-#[derive(Serialize, Deserialize, Clone, FromPrimitive, Debug)]
+#[derive(Serialize, Deserialize, Clone, FromPrimitive, Debug, PartialEq)]
 pub enum FaDataType {
     NA = 0,
     GROUPS = 1,

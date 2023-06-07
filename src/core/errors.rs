@@ -18,6 +18,11 @@ const BAD_MESSAGE: (i32, &str) = (508, "Bad message.");
 const SOCKET_EXCEPTION: (i32, &str) = (509, "Exception caught while reading socket.");
 const FAIL_CREATE_SOCK: (i32, &str) = (520, "Failed to create socket.");
 const SSL_FAIL: (i32, &str) = (530, "SSL specific TwsError.");
+const INVALID_SYMBOL: (i32, &str) = (579, "Invalid symbol in string.");
+const FA_PROFILE_NOT_SUPPORTED: (i32, &str) = (
+    585,
+    "FA Profile is not supported anymore, use FA Group instead",
+);
 
 #[derive(Clone, Debug)]
 pub enum TwsError {
@@ -32,6 +37,8 @@ pub enum TwsError {
     SocketException,
     FailCreateSock,
     SslFail,
+    InvalidSymbol,
+    FaProfileNotSupported,
 }
 
 impl TwsError {
@@ -48,6 +55,8 @@ impl TwsError {
             TwsError::SocketException => SOCKET_EXCEPTION.0,
             TwsError::FailCreateSock => FAIL_CREATE_SOCK.0,
             TwsError::SslFail => SSL_FAIL.0,
+            TwsError::InvalidSymbol => INVALID_SYMBOL.0,
+            TwsError::FaProfileNotSupported => FA_PROFILE_NOT_SUPPORTED.0,
         }
     }
     pub fn message(&self) -> &'static str {
@@ -63,6 +72,8 @@ impl TwsError {
             TwsError::SocketException => SOCKET_EXCEPTION.1,
             TwsError::FailCreateSock => FAIL_CREATE_SOCK.1,
             TwsError::SslFail => SSL_FAIL.1,
+            TwsError::InvalidSymbol => INVALID_SYMBOL.1,
+            TwsError::FaProfileNotSupported => FA_PROFILE_NOT_SUPPORTED.1,
         }
     }
 }

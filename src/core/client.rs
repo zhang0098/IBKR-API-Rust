@@ -2618,7 +2618,7 @@ where
     /// underlying. The contract details will be received via the contractDetails()
     /// function on the EWrapper.
     ///
-    ///    
+    ///
     /// # Arguments
     /// * req_id - The ID of the data request. Ensures that responses are
     ///            matched to requests if several requests are in process.
@@ -3030,8 +3030,29 @@ where
     ///     * 3 = ACCOUNT ALIASES
     /// *cxml - The XML string containing the new FA configuration
     ///         information.
-    pub fn replace_fa(&mut self, fa_data: FaDataType, cxml: &str) -> Result<(), IBKRApiLibError> {
+    pub fn replace_fa(
+        &mut self,
+        req_id: i32,
+        fa_data: FaDataType,
+        cxml: &str,
+    ) -> Result<(), IBKRApiLibError> {
         self.check_connected(NO_VALID_ID)?;
+
+        if self.server_version() >= MIN_SERVER_VER_FA_PROFILE_DESUPPORT
+            && fa_data == FaDataType::PROFILES
+        {
+            let err = IBKRApiLibError::ApiError(TwsApiReportableError::new(
+                req_id,
+                TwsError::FaProfileNotSupported.code().to_string(),
+                format!(
+                    "{}{}",
+                    TwsError::FaProfileNotSupported.message(),
+                    "replace_fa"
+                ),
+            ));
+
+            return Err(err);
+        }
 
         let version = 1;
         let message_id: i32 = OutgoingMessageIds::ReplaceFa as i32;
@@ -3041,7 +3062,9 @@ where
         msg.push_str(&make_field(&version)?);
         msg.push_str(&make_field(&fa_data)?);
         msg.push_str(&make_field(&String::from(cxml))?);
-
+        if self.server_version() >= MIN_SERVER_VER_REPLACE_FA_END {
+            msg.push_str(&make_field(&req_id)?);
+        }
         self.send_request(msg.as_str())
     }
 
