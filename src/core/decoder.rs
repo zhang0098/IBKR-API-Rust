@@ -30,12 +30,13 @@ use crate::core::order::{Order, OrderState, SoftDollarTier};
 use crate::core::order_decoder::OrderDecoder;
 use crate::core::scanner::ScanData;
 use crate::core::server_versions::{
-    MIN_SERVER_VER_AGG_GROUP, MIN_SERVER_VER_FRACTIONAL_POSITIONS, MIN_SERVER_VER_LAST_LIQUIDITY,
+    MIN_SERVER_VER_AGG_GROUP, MIN_SERVER_VER_ENCODE_MSG_ASCII7,
+    MIN_SERVER_VER_FRACTIONAL_POSITIONS, MIN_SERVER_VER_LAST_LIQUIDITY,
     MIN_SERVER_VER_MARKET_CAP_PRICE, MIN_SERVER_VER_MARKET_RULES,
     MIN_SERVER_VER_MD_SIZE_MULTIPLIER, MIN_SERVER_VER_MODELS_SUPPORT,
     MIN_SERVER_VER_ORDER_CONTAINER, MIN_SERVER_VER_PAST_LIMIT, MIN_SERVER_VER_PRE_OPEN_BID_ASK,
     MIN_SERVER_VER_REALIZED_PNL, MIN_SERVER_VER_REAL_EXPIRATION_DATE,
-    MIN_SERVER_VER_SERVICE_DATA_TYPE, MIN_SERVER_VER_SMART_DEPTH,
+    MIN_SERVER_VER_SERVICE_DATA_TYPE, MIN_SERVER_VER_SMART_DEPTH, MIN_SERVER_VER_STOCK_TYPE,
     MIN_SERVER_VER_SYNT_REALTIME_BARS, MIN_SERVER_VER_UNDERLYING_INFO,
     MIN_SERVER_VER_UNREALIZED_PNL,
 };
@@ -679,7 +680,12 @@ where
             contract.under_con_id = decode_i32(&mut fields_itr)?;
         }
         if version >= 5 {
-            contract.long_name = decode_string(&mut fields_itr)?;
+            if self.server_version >= MIN_SERVER_VER_ENCODE_MSG_ASCII7 {
+                //todo
+                contract.long_name = decode_string(&mut fields_itr)?;
+            } else {
+                contract.long_name = decode_string(&mut fields_itr)?;
+            }
             contract.contract.primary_exchange = decode_string(&mut fields_itr)?;
         }
 
@@ -723,6 +729,9 @@ where
 
         if self.server_version >= MIN_SERVER_VER_REAL_EXPIRATION_DATE {
             contract.real_expiration_date = decode_string(&mut fields_itr)?;
+        }
+        if self.server_version >= MIN_SERVER_VER_STOCK_TYPE {
+            contract.stock_type = decode_string(&mut fields_itr)?;
         }
 
         self.wrapper
