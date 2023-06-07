@@ -267,6 +267,7 @@ where
             Some(IncomingMessageIds::RerouteMktDepthReq) => {
                 self.process_reroute_mkt_depth_req(fields)?
             }
+            Some(IncomingMessageIds::ReplaceFaEnd) => self.process_replace_fa_end(fields)?,
 
             _ => panic!("Received unkown message id!!  Exiting..."),
         }
@@ -2577,6 +2578,18 @@ where
             .lock()
             .expect(WRAPPER_POISONED_MUTEX)
             .verify_message_api(api_data.as_ref());
+        Ok(())
+    }
+
+    //----------------------------------------------------------------------------------------------
+    fn process_replace_fa_end(&mut self, fields: &[String]) -> Result<(), IBKRApiLibError> {
+        let mut fields_itr = fields.iter();
+        //throw away message_id
+        fields_itr.next();
+
+        let req_id = decode_i32(&mut fields_itr)?;
+        let text = decode_string(&mut fields_itr)?;
+        todo!();
         Ok(())
     }
 

@@ -432,6 +432,7 @@ pub struct Order {
     pub parent_perm_id: i32,
 
     pub use_price_mgmt_algo: bool,
+
     pub duration: i32,
     pub post_to_ats: i32,
 }
@@ -955,6 +956,7 @@ impl Default for Order {
             parent_perm_id: 0,
 
             use_price_mgmt_algo: false,
+
             duration: UNSET_INTEGER,
             post_to_ats: UNSET_INTEGER,
         }
