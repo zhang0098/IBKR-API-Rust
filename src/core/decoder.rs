@@ -35,10 +35,10 @@ use crate::core::server_versions::{
     MIN_SERVER_VER_MARKET_CAP_PRICE, MIN_SERVER_VER_MARKET_RULES,
     MIN_SERVER_VER_MD_SIZE_MULTIPLIER, MIN_SERVER_VER_MODELS_SUPPORT,
     MIN_SERVER_VER_ORDER_CONTAINER, MIN_SERVER_VER_PAST_LIMIT, MIN_SERVER_VER_PRE_OPEN_BID_ASK,
-    MIN_SERVER_VER_REALIZED_PNL, MIN_SERVER_VER_REAL_EXPIRATION_DATE,
-    MIN_SERVER_VER_SERVICE_DATA_TYPE, MIN_SERVER_VER_SMART_DEPTH, MIN_SERVER_VER_STOCK_TYPE,
-    MIN_SERVER_VER_SYNT_REALTIME_BARS, MIN_SERVER_VER_UNDERLYING_INFO,
-    MIN_SERVER_VER_UNREALIZED_PNL,
+    MIN_SERVER_VER_PRICE_BASED_VOLATILITY, MIN_SERVER_VER_REALIZED_PNL,
+    MIN_SERVER_VER_REAL_EXPIRATION_DATE, MIN_SERVER_VER_SERVICE_DATA_TYPE,
+    MIN_SERVER_VER_SMART_DEPTH, MIN_SERVER_VER_STOCK_TYPE, MIN_SERVER_VER_SYNT_REALTIME_BARS,
+    MIN_SERVER_VER_UNDERLYING_INFO, MIN_SERVER_VER_UNREALIZED_PNL,
 };
 use crate::core::wrapper::Wrapper;
 
@@ -2353,10 +2353,17 @@ where
 
         //throw away message_id
         fields_itr.next();
-
-        let version = decode_i32(&mut fields_itr)?;
+        let mut version = i32::min_value();
+        if self.server_version < MIN_SERVER_VER_PRICE_BASED_VOLATILITY {
+            version = decode_i32(&mut fields_itr)?;
+        }
         let ticker_id = decode_i32(&mut fields_itr)?;
         let tick_type = decode_i32(&mut fields_itr)?;
+
+        if self.server_version >= MIN_SERVER_VER_PRICE_BASED_VOLATILITY {
+            let tick_attrib = decode_i32(&mut fields_itr)?;
+        }
+
         let mut implied_vol = decode_f64(&mut fields_itr)?;
         if approx_eq!(f64, implied_vol, -1.0, ulps = 2) {
             // -1 is the "not yet computed" indicator
