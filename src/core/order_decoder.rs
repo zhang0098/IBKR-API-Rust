@@ -13,11 +13,11 @@ use crate::core::errors::IBKRApiLibError;
 use crate::core::order::{Order, OrderComboLeg, OrderState, SoftDollarTier};
 use crate::core::order_condition::{create_condition, Condition};
 use crate::core::server_versions::{
-    MIN_SERVER_VER_AUTO_PRICE_FOR_HEDGE, MIN_SERVER_VER_CASH_QTY, MIN_SERVER_VER_D_PEG_ORDERS,
-    MIN_SERVER_VER_FRACTIONAL_POSITIONS, MIN_SERVER_VER_MODELS_SUPPORT,
-    MIN_SERVER_VER_ORDER_CONTAINER, MIN_SERVER_VER_PEGGED_TO_BENCHMARK,
-    MIN_SERVER_VER_PRICE_MGMT_ALGO, MIN_SERVER_VER_SOFT_DOLLAR_TIER, MIN_SERVER_VER_SSHORTX_OLD,
-    MIN_SERVER_VER_WHAT_IF_EXT_FIELDS,
+    MIN_SERVER_VER_AUTO_PRICE_FOR_HEDGE, MIN_SERVER_VER_CASH_QTY, MIN_SERVER_VER_DURATION,
+    MIN_SERVER_VER_D_PEG_ORDERS, MIN_SERVER_VER_FRACTIONAL_POSITIONS,
+    MIN_SERVER_VER_MODELS_SUPPORT, MIN_SERVER_VER_ORDER_CONTAINER,
+    MIN_SERVER_VER_PEGGED_TO_BENCHMARK, MIN_SERVER_VER_PRICE_MGMT_ALGO,
+    MIN_SERVER_VER_SOFT_DOLLAR_TIER, MIN_SERVER_VER_SSHORTX_OLD, MIN_SERVER_VER_WHAT_IF_EXT_FIELDS,
 };
 
 //==================================================================================================
@@ -190,7 +190,7 @@ impl<'a> OrderDecoder<'a> {
         self.decode_is_oms_containers(fields_iter)?;
         self.decode_discretionary_up_to_limit_price(fields_iter)?;
         self.decode_use_price_mgmt_algo(fields_iter)?;
-
+        self.decode_durationo(fields_iter)?;
         Ok(())
     }
 
@@ -1051,6 +1051,14 @@ impl<'a> OrderDecoder<'a> {
     ) -> Result<(), IBKRApiLibError> {
         if self.server_version >= MIN_SERVER_VER_PRICE_MGMT_ALGO {
             self.order.use_price_mgmt_algo = decode_bool(fields_iter)?;
+        }
+        Ok(())
+    }
+
+    //----------------------------------------------------------------------------------------------
+    fn decode_durationo(&mut self, fields_iter: &mut Iter<String>) -> Result<(), IBKRApiLibError> {
+        if self.server_version >= MIN_SERVER_VER_DURATION {
+            self.order.duration = decode_i32_show_unset(fields_iter)?;
         }
         Ok(())
     }
