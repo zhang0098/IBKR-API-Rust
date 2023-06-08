@@ -213,7 +213,7 @@ pub trait Wrapper: Send + Sync {
     //----------------------------------------------------------------------------------------------
     /// Returns the order book.
     ///
-    /// # Arguments       
+    /// # Arguments
     /// * req_id -  the request id
     /// * position -  the order book's row being updated
     /// * operation - how to refresh the row:
@@ -450,7 +450,7 @@ pub trait Wrapper: Send + Sync {
     ///                 in IB. Possible values include:
     ///                 none = empty selection
     ///                 contractID@exchange = any non-combination contract.
-    ///                
+    ///
     ///                 //Examples: 8314@SMART for IBM SMART; 8314@ARCA for IBM @ARCA.
     ///                 //combo = if any combo is selected.
     fn display_group_updated(&mut self, req_id: i32, contract_info: &str);
@@ -714,4 +714,6 @@ pub trait Wrapper: Send + Sync {
     //----------------------------------------------------------------------------------------------
     /// This is called at the end of a given request for completed orders.
     fn completed_orders_end(&mut self);
+
+    fn replace_fa_end(&mut self, req_id: i32, text: &str);
 }

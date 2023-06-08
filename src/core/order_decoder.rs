@@ -20,6 +20,8 @@ use crate::core::server_versions::{
     MIN_SERVER_VER_SOFT_DOLLAR_TIER, MIN_SERVER_VER_SSHORTX_OLD, MIN_SERVER_VER_WHAT_IF_EXT_FIELDS,
 };
 
+use super::server_versions::MIN_SERVER_VER_AUTO_CANCEL_PARENT;
+
 //==================================================================================================
 pub struct OrderDecoder<'a> {
     contract: &'a mut Contract,
@@ -192,6 +194,9 @@ impl<'a> OrderDecoder<'a> {
         self.decode_use_price_mgmt_algo(fields_iter)?;
         self.decode_durationo(fields_iter)?;
         self.decode_post_to_ats(fields_iter)?;
+        if self.server_version >= MIN_SERVER_VER_AUTO_CANCEL_PARENT {
+            self.decode_auto_cancel_parent(fields_iter)?;
+        }
         Ok(())
     }
 

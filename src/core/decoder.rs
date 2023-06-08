@@ -31,14 +31,15 @@ use crate::core::order_decoder::OrderDecoder;
 use crate::core::scanner::ScanData;
 use crate::core::server_versions::{
     MIN_SERVER_VER_AGG_GROUP, MIN_SERVER_VER_ENCODE_MSG_ASCII7,
-    MIN_SERVER_VER_FRACTIONAL_POSITIONS, MIN_SERVER_VER_LAST_LIQUIDITY,
-    MIN_SERVER_VER_MARKET_CAP_PRICE, MIN_SERVER_VER_MARKET_RULES,
+    MIN_SERVER_VER_FRACTIONAL_POSITIONS, MIN_SERVER_VER_FRACTIONAL_SIZE_SUPPORT,
+    MIN_SERVER_VER_LAST_LIQUIDITY, MIN_SERVER_VER_MARKET_CAP_PRICE, MIN_SERVER_VER_MARKET_RULES,
     MIN_SERVER_VER_MD_SIZE_MULTIPLIER, MIN_SERVER_VER_MODELS_SUPPORT,
     MIN_SERVER_VER_ORDER_CONTAINER, MIN_SERVER_VER_PAST_LIMIT, MIN_SERVER_VER_PRE_OPEN_BID_ASK,
     MIN_SERVER_VER_PRICE_BASED_VOLATILITY, MIN_SERVER_VER_REALIZED_PNL,
     MIN_SERVER_VER_REAL_EXPIRATION_DATE, MIN_SERVER_VER_SERVICE_DATA_TYPE,
-    MIN_SERVER_VER_SMART_DEPTH, MIN_SERVER_VER_STOCK_TYPE, MIN_SERVER_VER_SYNT_REALTIME_BARS,
-    MIN_SERVER_VER_UNDERLYING_INFO, MIN_SERVER_VER_UNREALIZED_PNL,
+    MIN_SERVER_VER_SIZE_RULES, MIN_SERVER_VER_SMART_DEPTH, MIN_SERVER_VER_STOCK_TYPE,
+    MIN_SERVER_VER_SYNT_REALTIME_BARS, MIN_SERVER_VER_UNDERLYING_INFO,
+    MIN_SERVER_VER_UNREALIZED_PNL,
 };
 use crate::core::wrapper::Wrapper;
 
@@ -731,8 +732,15 @@ where
         if self.server_version >= MIN_SERVER_VER_REAL_EXPIRATION_DATE {
             contract.real_expiration_date = decode_string(&mut fields_itr)?;
         }
+
         if self.server_version >= MIN_SERVER_VER_STOCK_TYPE {
             contract.stock_type = decode_string(&mut fields_itr)?;
+        }
+
+        if self.server_version >= MIN_SERVER_VER_FRACTIONAL_SIZE_SUPPORT
+            && self.server_version < MIN_SERVER_VER_SIZE_RULES
+        {
+            let _size = decode_f64(&mut fields_itr)?;
         }
 
         self.wrapper
@@ -2362,7 +2370,7 @@ where
         let tick_type = decode_i32(&mut fields_itr)?;
 
         if self.server_version >= MIN_SERVER_VER_PRICE_BASED_VOLATILITY {
-            let tick_attrib = decode_i32(&mut fields_itr)?;
+            let _tick_attrib = decode_i32(&mut fields_itr)?;
         }
 
         let mut implied_vol = decode_f64(&mut fields_itr)?;
@@ -2589,7 +2597,10 @@ where
 
         let req_id = decode_i32(&mut fields_itr)?;
         let text = decode_string(&mut fields_itr)?;
-        todo!();
+        self.wrapper
+            .lock()
+            .expect(WRAPPER_POISONED_MUTEX)
+            .replace_fa_end(req_id, text.as_ref());
         Ok(())
     }
 

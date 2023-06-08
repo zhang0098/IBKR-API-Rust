@@ -194,7 +194,7 @@ impl Wrapper for DefaultWrapper {
         account_name: &str,
     ) {
         info!(
-            "update_portfolio -- contract: {}, position: {}, market_price: {}, market_value: {}, 
+            "update_portfolio -- contract: {}, position: {}, market_price: {}, market_value: {},
              average_cost: {}, unrealized_pnl: {},  realized_pnl: {},  account_name: {}",
             contract,
             position,
@@ -866,5 +866,8 @@ impl Wrapper for DefaultWrapper {
     //----------------------------------------------------------------------------------------------
     fn completed_orders_end(&mut self) {
         info!("completed_orders_end -- (no parameters for this message)");
+    }
+    fn replace_fa_end(&mut self, req_id: i32, text: &str) {
+        info!("replace_fa_end -- req_id:{}, text:{}", req_id, text);
     }
 }

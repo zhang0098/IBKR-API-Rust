@@ -3874,4 +3874,8 @@ where
     fn completed_orders_end(&mut self) {
         info!("completed_orders_end -- (no parameters for this message)");
     }
+
+    fn replace_fa_end(&mut self, req_id: i32, text: &str) {
+        info!("replace_fa_end -- req_id:{}, text:{}", req_id, text);
+    }
 }
